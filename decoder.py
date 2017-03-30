@@ -6,17 +6,18 @@ DEBUG = False
 ENCODING = 'utf-8'
 
 import sys
-from functions import * 
+from functions import *
 
 
 class Decode:
     def __init__(self, guessString):
         self.guessString = guessString
-        self.method = ['Base16Decode', 'Base32Decode', 'Base64Decode', 'Base64DecodeWithoutCaps']
+        self.method = ['Base16Decode', 'Base32Decode', 'Base64Decode', 'Base64DecodeWithoutCaps', 'caser']
         # self.method = ['Base64DecodeWithoutCaps']
         self.method.sort()
         self.total = 0
         # self.echo()
+        self.ans = set()
 
     def count(self):
         print ('all answer:', self.total)
@@ -33,12 +34,22 @@ class Decode:
                         self.total += 1
         self.count()
 
-    def DFS(self, string, encryption = ''):
+    def DFS(self, string, method=None, encryption = ''):
+        if method is None:
+            method = self.method
         if (len(string) == 0):
             return
-        for one in range(0, len(self.method), 1):
-            answer = eval(self.method[one])(string, DEBUG, ENCODING)
-            
+        # try:
+        #     if 'caser' in encryption:
+        #         self.method.remove('caser')
+        # except ValueError:
+        #     pass
+        for one in range(0, len(method), 1):
+            # print(one)
+            func = method[one]
+            answer = eval(func)(string, DEBUG, ENCODING)
+            if method[one] == 'caser':
+                method.remove('caser')
             if (len(answer) > 0):
                 # print (answer)
                 for ans in answer:
@@ -48,15 +59,22 @@ class Decode:
                             # print (self.method[one])
                             # exit(0)
                         # print (ans)
+                        # print(self.method, one)
                         # print (self.method[one])
-                        print (encryption + self.method[one] + ' -> ' + ans)
+                        answer_one = encryption + func + ' -> ' + ans
+                        # print(answer_one)
+                        self.ans.add(answer_one)
                         self.total += 1
-                        self.DFS(ans, encryption + self.method[one] + ' -> ')
+
+                        self.DFS(ans, method, encryption + func + ' -> ')
                     else:
                         continue
             else:
                 continue
-        
+
+    def print_ans(self):
+        for i in self.ans:
+            print(i)
 
 
 def main():
@@ -72,6 +90,8 @@ def main():
     d = Decode(guessString)
     d.DFS(guessString)
     d.count()
+    d.print_ans()
+
 
 
 if __name__ == '__main__':

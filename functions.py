@@ -2,8 +2,25 @@
 #coding: utf-8
 Author = 'lc4t'
 
-
+import string
 import base64
+
+
+def caser(guessString, DEBUG=False, *args):
+    ans = []
+    for i in range(-255, 256):
+        d = ''
+        for k in guessString:
+            letter = (ord(k) + i) % 256
+            letter = chr(letter)
+            if letter not in string.printable:
+                break
+            else:
+                d += letter
+        if len(d) == len(guessString):
+            ans.append(d)
+    # print(ans)
+    return ans
 
 
 def concatListSeq(seq):
@@ -18,7 +35,7 @@ def concatListSeq(seq):
             BFS(seq, ack + i, start + 1)
 
     BFS(seq)
-    return (ans)  
+    return (ans)
 
 def checkAcceptableCharacter(ans, function, ENCODING = 'utf-8'):
     AcceptableList = [9, 10, 13]
@@ -85,8 +102,8 @@ def Base64Decode(guessString, DEBUG = False, ENCODING = 'utf-8'):
 
 
 def Base64DecodeWithoutCaps(guessString, DEBUG = False, ENCODING = 'utf-8'):
-    if (guessString.lower() != guessString and guessString.upper() != guessString):
-        return []
+    # if (guessString.lower() != guessString and guessString.upper() != guessString):
+    #     return []
     def Base64DecodeWithoutCapsGetAnsSeq(seq, ENCODING = 'utf-8'):
         ansList = []
         for a in [seq[0].lower(), seq[0].upper()]:
@@ -108,7 +125,7 @@ def Base64DecodeWithoutCaps(guessString, DEBUG = False, ENCODING = 'utf-8'):
         for seqID in range(0, len(guessString), 4):
             seq = guessString[seqID:seqID + 4]
             ansseq = Base64DecodeWithoutCapsGetAnsSeq(seq, ENCODING)
-            
+
             # cnt = len(ansseq)
             if (len(ansseq) == 0):
                 raise ValueError('None @', seq)
@@ -126,4 +143,3 @@ def Base64DecodeWithoutCaps(guessString, DEBUG = False, ENCODING = 'utf-8'):
         return []
     return []
 ###END
-
